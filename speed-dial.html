@@ -9,323 +9,254 @@
 <title>Speed Dial</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-
 :root{
   font-family:'Calibri','Candara','Segoe UI',Arial,sans-serif;
   --sage:#5a9464;--sage-d:#2d5e38;--sage-p:#e6f4e2;
   --text:#1e2e1e;--muted:#6e8c6e;--rim:#b8d0b4;
-  --white:#ffffff;--danger:#d9534f;
+  --white:#fff;--danger:#d9534f;
   --bbm:#3a6fba;--bbm2:#5588cc;--bbm-l:#ddeaf8;
   --fede:#b85c28;--fede2:#d07840;--fede-l:#fae5d4;
 }
+html,body{width:100%;height:100%;overflow:hidden;user-select:none;background:#daeedd}
 
-html,body{width:100%;height:100%;overflow:hidden;user-select:none}
-
-/* ══ SCREEN SYSTEM ══ */
+/* ══ SCREENS ══ */
 .screen{
-  position:fixed;inset:0;
-  display:flex;flex-direction:column;align-items:center;
-  transition:opacity .3s ease,transform .3s ease;
-  overflow:hidden;
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
+  transition:opacity .28s ease,transform .28s ease;
 }
-.screen.hidden{opacity:0;pointer-events:none;transform:translateY(18px) scale(.97)}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(16px) scale(.97)}
 
-/* ══════════════════ HOME ══════════════════ */
+/* ══ HOME ══ */
 #home{
   background:linear-gradient(175deg,#f0f8ec 0%,#daeedd 50%,#c8e0ca 100%);
   justify-content:space-between;
-  padding-bottom:max(56px,env(safe-area-inset-bottom,56px));
+  padding-bottom:max(52px,env(safe-area-inset-bottom,52px));
 }
+#home::before{content:'';position:absolute;width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(90,148,100,.13),transparent 70%);top:-60px;right:-80px;pointer-events:none}
+#home::after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(58,111,186,.1),transparent 70%);bottom:60px;left:-60px;pointer-events:none}
 
-/* decorative blobs */
-#home::before,#home::after{
-  content:'';position:absolute;border-radius:50%;pointer-events:none;
-}
-#home::before{
-  width:320px;height:320px;
-  background:radial-gradient(circle,rgba(90,148,100,.13),transparent 70%);
-  top:-60px;right:-80px;
-}
-#home::after{
-  width:260px;height:260px;
-  background:radial-gradient(circle,rgba(58,111,186,.1),transparent 70%);
-  bottom:60px;left:-60px;
-}
-
-.home-top{
-  width:100%;
-  padding:max(56px,env(safe-area-inset-top,56px)) 28px 0;
-  text-align:center;position:relative;z-index:1;
-}
-.home-time{
-  font-size:84px;font-weight:200;color:var(--text);
-  letter-spacing:-4px;line-height:1;
-}
+.home-top{width:100%;padding:max(52px,env(safe-area-inset-top,52px)) 28px 0;text-align:center;position:relative;z-index:1}
+.home-time{font-size:82px;font-weight:200;color:var(--text);letter-spacing:-4px;line-height:1}
 .home-date{font-size:15px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
-.home-greeting{
-  font-size:24px;font-weight:800;color:var(--sage-d);
-  margin-top:28px;
-}
-.home-sub{font-size:14px;color:var(--muted);margin-top:5px}
+.home-greeting{font-size:23px;font-weight:800;color:var(--sage-d);margin-top:26px}
+.home-sub{font-size:14px;color:var(--muted);margin-top:4px}
+.divider{width:48px;height:4px;border-radius:99px;background:linear-gradient(90deg,var(--bbm),var(--fede));opacity:.5;margin:18px auto 0}
 
-/* pill divider */
-.divider{
-  width:48px;height:4px;border-radius:99px;
-  background:linear-gradient(90deg,var(--bbm),var(--fede));
-  opacity:.5;margin:20px auto 0;
-}
-
-/* BIG ROUND BUTTONS */
-.menu-row{
-  display:flex;gap:36px;
-  width:100%;justify-content:center;
-  padding:0 20px;position:relative;z-index:1;
-}
+.menu-row{display:flex;gap:34px;width:100%;justify-content:center;padding:0 20px;position:relative;z-index:1}
 .menu-btn{
-  width:160px;height:160px;border-radius:50%;border:none;cursor:pointer;
+  width:158px;height:158px;border-radius:50%;border:none;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-family:'Calibri','Candara',sans-serif;
-  font-size:18px;font-weight:900;letter-spacing:2.5px;
-  text-transform:uppercase;color:#fff;gap:10px;
-  transition:transform .18s,box-shadow .2s;
-  position:relative;overflow:hidden;
+  font-family:'Calibri','Candara',sans-serif;font-size:18px;font-weight:900;
+  letter-spacing:2.5px;text-transform:uppercase;color:#fff;gap:10px;
+  transition:transform .18s,box-shadow .2s;position:relative;overflow:hidden;
 }
-.menu-btn::after{
-  content:'';position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.25),transparent 65%);
-}
-.menu-btn:active{transform:scale(.91)}
+.menu-btn::after{content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.25),transparent 65%)}
+.menu-btn:active{transform:scale(.9)}
 .btn-emoji{font-size:42px;line-height:1}
+.btn-bbm{background:linear-gradient(140deg,var(--bbm2),var(--bbm));
+  box-shadow:0 0 0 14px rgba(58,111,186,.11),0 14px 44px rgba(58,111,186,.38)}
+.btn-fede{background:linear-gradient(140deg,var(--fede2),var(--fede));
+  box-shadow:0 0 0 14px rgba(184,92,40,.11),0 14px 44px rgba(184,92,40,.38)}
 
-.btn-bbm{
-  background:linear-gradient(140deg,var(--bbm2),var(--bbm));
-  box-shadow:0 0 0 14px rgba(58,111,186,.11),0 14px 44px rgba(58,111,186,.38);
-}
-.btn-fede{
-  background:linear-gradient(140deg,var(--fede2),var(--fede));
-  box-shadow:0 0 0 14px rgba(184,92,40,.11),0 14px 44px rgba(184,92,40,.38);
-}
-
-.home-footer{
-  display:flex;align-items:center;gap:8px;
-  position:relative;z-index:1;
-}
+.home-footer{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
 .home-hint{font-size:12px;color:var(--muted);letter-spacing:.5px}
-.info-btn{
-  width:26px;height:26px;border-radius:50%;border:1.5px solid var(--rim);
-  background:rgba(255,255,255,.7);cursor:pointer;
-  font-size:13px;font-weight:700;color:var(--sage-d);
+.icon-btn{
+  width:30px;height:30px;border-radius:50%;border:1.5px solid var(--rim);
+  background:rgba(255,255,255,.75);cursor:pointer;
+  font-size:15px;color:var(--sage-d);
   display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
 }
+.icon-btn:active{background:var(--rim)}
 
-/* ══════════════════ DIAL ══════════════════ */
-#dial{
-  justify-content:flex-start;
-}
-#dial.bbm-mode { background:radial-gradient(ellipse at 50% 35%,#eaf3ff 0%,#d4e6f5 60%,#c8d8ec 100%); }
-#dial.fede-mode{ background:radial-gradient(ellipse at 50% 35%,#fff4ec 0%,#f5e0cc 60%,#ecdacc 100%); }
+/* ══ DIAL ══ */
+#dial{justify-content:flex-start}
+#dial.bbm-mode{background:radial-gradient(ellipse at 50% 35%,#eaf3ff 0%,#d4e6f5 60%,#c8d8ec 100%)}
+#dial.fede-mode{background:radial-gradient(ellipse at 50% 35%,#fff4ec 0%,#f5e0cc 60%,#ecdacc 100%)}
 
-.dial-header{
-  width:100%;
-  padding:max(22px,env(safe-area-inset-top,22px)) 20px 0;
-  display:flex;align-items:center;gap:12px;
-}
-.back-btn{
-  background:rgba(255,255,255,.82);border:1.5px solid var(--rim);
-  border-radius:50px;padding:9px 20px;
-  font-family:'Calibri','Candara',sans-serif;
-  font-size:14px;font-weight:700;cursor:pointer;color:var(--text);
-  transition:background .15s;box-shadow:0 2px 8px rgba(0,0,0,.06);
-}
+.dial-header{width:100%;padding:max(22px,env(safe-area-inset-top,22px)) 16px 0;display:flex;align-items:center;gap:10px}
+.back-btn{background:rgba(255,255,255,.82);border:1.5px solid var(--rim);border-radius:50px;
+  padding:9px 18px;font-family:'Calibri','Candara',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;color:var(--text);transition:background .15s;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .back-btn:active{background:var(--rim)}
-
-.dial-badge{
-  padding:8px 20px;border-radius:50px;
-  font-size:14px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
-  box-shadow:0 2px 10px rgba(0,0,0,.1);
+.dial-badge{padding:8px 18px;border-radius:50px;font-size:14px;font-weight:900;letter-spacing:2px;
+  text-transform:uppercase;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.badge-bbm{background:var(--bbm);color:#fff}
+.badge-fede{background:var(--fede);color:#fff}
+.edit-contacts-btn{
+  margin-left:auto;background:rgba(255,255,255,.82);border:1.5px solid var(--rim);
+  border-radius:50px;padding:9px 16px;font-family:'Calibri','Candara',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;color:var(--muted);
+  transition:background .15s;white-space:nowrap;
 }
-.badge-bbm {background:var(--bbm);  color:#fff}
-.badge-fede{background:var(--fede); color:#fff}
+.edit-contacts-btn:active{background:var(--rim)}
 
 .dial-sub{font-size:15px;color:var(--muted);margin:10px 0 0;font-weight:500}
-
-/* ORBIT */
-.orbit-wrap{
-  flex:1;width:100%;
-  display:flex;align-items:center;justify-content:center;
-}
+.orbit-wrap{flex:1;width:100%;display:flex;align-items:center;justify-content:center}
 .orbit-container{position:relative;width:340px;height:340px}
 
 .ring{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
-.ring1{width:294px;height:294px;animation:spin 24s linear infinite}
-.ring2{width:204px;height:204px;animation:spin 17s linear infinite reverse}
-.bbm-mode  .ring1{border:1.5px solid rgba(58,111,186,.22)}
-.bbm-mode  .ring2{border:1px  dashed rgba(58,111,186,.14)}
+.ring1{width:292px;height:292px;animation:spin 24s linear infinite}
+.ring2{width:202px;height:202px;animation:spin 17s linear infinite reverse}
+.bbm-mode .ring1{border:1.5px solid rgba(58,111,186,.22)}
+.bbm-mode .ring2{border:1px dashed rgba(58,111,186,.14)}
 .fede-mode .ring1{border:1.5px solid rgba(184,92,40,.22)}
-.fede-mode .ring2{border:1px  dashed rgba(184,92,40,.14)}
+.fede-mode .ring2{border:1px dashed rgba(184,92,40,.14)}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 
 .lines-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.3}
+.center-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:15px;animation:cpulse 2.2s ease-in-out infinite}
+.center-dot.bbm{background:var(--bbm);box-shadow:0 0 0 6px rgba(58,111,186,.18),0 0 22px var(--bbm)}
+.center-dot.fede{background:var(--fede);box-shadow:0 0 0 6px rgba(184,92,40,.18),0 0 22px var(--fede)}
+@keyframes cpulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.45)}}
 
-.center-dot{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:28px;height:28px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;
-  animation:cpulse 2.2s ease-in-out infinite;
-}
-.center-dot.bbm {background:var(--bbm);  box-shadow:0 0 0 6px rgba(58,111,186,.18),0 0 22px var(--bbm)}
-.center-dot.fede{background:var(--fede); box-shadow:0 0 0 6px rgba(184,92,40,.18), 0 0 22px var(--fede)}
-@keyframes cpulse{
-  0%,100%{transform:translate(-50%,-50%) scale(1)}
-  50%    {transform:translate(-50%,-50%) scale(1.45)}
-}
-
-/* CONTACTS */
-.contact{
-  position:absolute;transform:translate(-50%,-50%);cursor:pointer;
+.contact{position:absolute;transform:translate(-50%,-50%);cursor:pointer;
   display:flex;flex-direction:column;align-items:center;
-  animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes popIn{
-  from{opacity:0;transform:translate(-50%,-50%) scale(0)}
-  to  {opacity:1;transform:translate(-50%,-50%) scale(1)}
-}
+  animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{opacity:0;transform:translate(-50%,-50%) scale(0)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 
-.avatar-wrap{
-  width:92px;height:92px;border-radius:50%;
-  border:3.5px solid transparent;background:#fff;
-  position:relative;overflow:hidden;
-  box-shadow:0 6px 22px rgba(0,0,0,.14),0 2px 6px rgba(0,0,0,.06);
-  transition:transform .18s,box-shadow .18s;
-}
-/* glass shine */
-.avatar-wrap::after{
-  content:'';position:absolute;top:4px;left:8px;
-  width:40px;height:22px;border-radius:50%;
-  background:rgba(255,255,255,.35);
-  transform:rotate(-20deg);pointer-events:none;
-}
-.contact:active .avatar-wrap{transform:scale(.88);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.avatar-wrap{width:90px;height:90px;border-radius:50%;border:3.5px solid transparent;
+  background:#fff;position:relative;overflow:hidden;
+  box-shadow:0 6px 22px rgba(0,0,0,.14),0 2px 6px rgba(0,0,0,.06);transition:transform .18s}
+.avatar-wrap::after{content:'';position:absolute;top:4px;left:8px;width:38px;height:20px;
+  border-radius:50%;background:rgba(255,255,255,.35);transform:rotate(-20deg);pointer-events:none}
+.contact:active .avatar-wrap{transform:scale(.88)}
+.avatar-emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:44px}
+.contact-name{margin-top:7px;font-size:13px;font-weight:800;font-family:'Calibri','Candara',sans-serif;
+  color:var(--text);white-space:nowrap;text-shadow:0 1px 5px rgba(255,255,255,.95);letter-spacing:.3px}
 
-.avatar-emoji{
-  width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:46px;
-}
-.contact-name{
-  margin-top:7px;font-size:13px;font-weight:800;
-  font-family:'Calibri','Candara',sans-serif;
-  color:var(--text);white-space:nowrap;
-  text-shadow:0 1px 5px rgba(255,255,255,.95);
-  letter-spacing:.3px;
-}
-
-.status-dot{
-  position:absolute;bottom:4px;right:4px;
-  width:15px;height:15px;border-radius:50%;border:3px solid #fff;
-}
+.status-dot{position:absolute;bottom:4px;right:4px;width:15px;height:15px;border-radius:50%;border:3px solid #fff}
 .online{background:#22c55e}.busy{background:var(--danger)}.away{background:#f59e0b}
 
-.dial-hint{
-  font-size:12px;color:var(--muted);
-  padding-bottom:max(30px,env(safe-area-inset-bottom,30px));
-  letter-spacing:.5px;font-weight:600;
-}
+.dial-hint{font-size:12px;color:var(--muted);padding-bottom:max(28px,env(safe-area-inset-bottom,28px));letter-spacing:.5px;font-weight:600}
 
-/* ══════════════════ CALLING ══════════════════ */
-#calling{
-  background:rgba(238,248,235,.96);
-  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
-  justify-content:center;z-index:50;
+.empty-orbit{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;color:var(--muted);text-align:center;padding:20px;
 }
-#calling::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(90,148,100,.08),rgba(58,111,186,.05));
-  pointer-events:none;
-}
+.empty-orbit .big{font-size:48px}
+.empty-orbit p{font-size:15px;font-weight:600}
+.empty-orbit small{font-size:13px;opacity:.7}
 
-.calling-avatar{
-  width:140px;height:140px;border-radius:50%;
-  border:4px solid var(--sage);background:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:64px;
-  margin-bottom:26px;position:relative;z-index:1;
-  animation:rp 1.8s ease-in-out infinite;
-}
-@keyframes rp{
-  0%,100%{box-shadow:0 0 0 12px rgba(90,148,100,.13),0 0 0 26px rgba(90,148,100,.06)}
-  50%    {box-shadow:0 0 0 20px rgba(90,148,100,.19),0 0 0 40px rgba(90,148,100,.08)}
-}
+/* ══ CALLING ══ */
+#calling{background:rgba(238,248,235,.96);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);justify-content:center;z-index:50}
+#calling::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(90,148,100,.08),rgba(58,111,186,.05));pointer-events:none}
+.calling-avatar{width:140px;height:140px;border-radius:50%;border:4px solid var(--sage);background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:64px;margin-bottom:26px;
+  position:relative;z-index:1;animation:rp 1.8s ease-in-out infinite}
+@keyframes rp{0%,100%{box-shadow:0 0 0 12px rgba(90,148,100,.13),0 0 0 26px rgba(90,148,100,.06)}
+  50%{box-shadow:0 0 0 20px rgba(90,148,100,.19),0 0 0 40px rgba(90,148,100,.08)}}
 .calling-name{font-size:36px;font-weight:800;color:var(--text);margin-bottom:6px;position:relative;z-index:1}
 .calling-number{font-size:16px;color:var(--muted);margin-bottom:12px;position:relative;z-index:1}
-.calling-status{
-  font-size:13px;color:var(--sage);letter-spacing:2.5px;
-  text-transform:uppercase;font-weight:700;margin-bottom:64px;
-  animation:blink 1.4s steps(1) infinite;position:relative;z-index:1;
-}
+.calling-status{font-size:13px;color:var(--sage);letter-spacing:2.5px;text-transform:uppercase;font-weight:700;
+  margin-bottom:64px;animation:blink 1.4s steps(1) infinite;position:relative;z-index:1}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-.end-btn{
-  width:82px;height:82px;border-radius:50%;background:var(--danger);border:none;
-  cursor:pointer;font-size:34px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 12px rgba(217,83,79,.12),0 10px 32px rgba(217,83,79,.4);
-  transition:transform .15s;position:relative;z-index:1;
-}
+.end-btn{width:82px;height:82px;border-radius:50%;background:var(--danger);border:none;cursor:pointer;
+  font-size:34px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 12px rgba(217,83,79,.12),0 10px 32px rgba(217,83,79,.4);transition:transform .15s;position:relative;z-index:1}
 .end-btn:active{transform:scale(.88)}
 
-/* ══════════════════ INSTALL GUIDE ══════════════════ */
-#guide{
-  background:linear-gradient(170deg,#f0f8ec 0%,#daeedd 100%);
-  justify-content:flex-start;overflow-y:auto;
-  padding-bottom:max(40px,env(safe-area-inset-bottom,40px));
+/* ══ CONTACT MANAGER ══ */
+#manager{
+  background:linear-gradient(170deg,#f2f9ee 0%,#e0eedd 100%);
+  justify-content:flex-start;overflow:hidden;
 }
-.guide-header{
-  width:100%;padding:max(22px,env(safe-area-inset-top,22px)) 20px 0;
-  display:flex;align-items:center;gap:12px;
+.mgr-header{
+  width:100%;padding:max(22px,env(safe-area-inset-top,22px)) 18px 0;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
 }
-.guide-body{
-  width:100%;padding:24px 22px 0;
-  display:flex;flex-direction:column;gap:0;
+.mgr-title{font-size:18px;font-weight:800;color:var(--text);flex:1}
+.add-btn{
+  background:var(--sage);color:#fff;border:none;border-radius:50px;
+  padding:9px 18px;font-family:'Calibri','Candara',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .15s;
 }
-.guide-title{
-  font-size:22px;font-weight:800;color:var(--text);
-  margin-bottom:4px;
-}
-.guide-intro{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.add-btn:active{transform:scale(.92)}
 
-.os-tabs{display:flex;gap:10px;margin-bottom:20px}
-.tab{
-  flex:1;padding:10px 0;border-radius:12px;border:none;cursor:pointer;
-  font-family:'Calibri','Candara',sans-serif;
-  font-size:15px;font-weight:700;transition:all .18s;
+.mgr-list{
+  width:100%;flex:1;overflow-y:auto;padding:16px 18px;
+  display:flex;flex-direction:column;gap:10px;
+  padding-bottom:max(30px,env(safe-area-inset-bottom,30px));
 }
-.tab.active{background:var(--sage);color:#fff;box-shadow:0 4px 14px rgba(90,148,100,.3)}
-.tab.inactive{background:rgba(255,255,255,.6);color:var(--muted);border:1.5px solid var(--rim)}
 
-.steps{display:flex;flex-direction:column;gap:14px}
-.step{
-  background:rgba(255,255,255,.82);border-radius:18px;
-  padding:16px 18px;display:flex;gap:14px;align-items:flex-start;
+.contact-card{
+  background:rgba(255,255,255,.88);border-radius:18px;
+  padding:14px 16px;display:flex;align-items:center;gap:14px;
   box-shadow:0 2px 12px rgba(0,0,0,.07);
 }
-.step-num{
-  width:36px;height:36px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;font-weight:900;color:#fff;background:var(--sage);
-}
-.step-text{flex:1}
-.step-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:3px}
-.step-desc{font-size:13px;color:var(--muted);line-height:1.5}
-.step-icon{font-size:22px;margin-top:1px}
+.card-emoji{font-size:38px;width:52px;text-align:center;flex-shrink:0}
+.card-info{flex:1;min-width:0}
+.card-name{font-size:16px;font-weight:800;color:var(--text)}
+.card-num{font-size:13px;color:var(--muted);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-status{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.card-actions{display:flex;gap:8px;flex-shrink:0}
+.card-btn{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;transition:transform .15s}
+.card-btn:active{transform:scale(.88)}
+.btn-edit{background:#e8f4e8;color:var(--sage-d)}
+.btn-del{background:#fde8e8;color:var(--danger)}
 
-.tip-box{
-  margin-top:20px;background:rgba(255,255,255,.7);
-  border-left:4px solid var(--sage);border-radius:0 14px 14px 0;
-  padding:14px 16px;
+.empty-list{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-list .big{font-size:52px;margin-bottom:12px}
+.empty-list p{font-size:15px;font-weight:600}
+
+/* ══ MODAL ══ */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  z-index:100;display:flex;align-items:flex-end;justify-content:center;
+  transition:opacity .25s ease;
 }
-.tip-box p{font-size:13px;color:var(--text);line-height:1.5}
-.tip-box strong{color:var(--sage-d)}
+.modal-backdrop.hidden{opacity:0;pointer-events:none}
+.modal{
+  width:100%;max-width:480px;
+  background:#f4faf0;border-radius:28px 28px 0 0;
+  padding:28px 22px max(32px,env(safe-area-inset-bottom,32px));
+  display:flex;flex-direction:column;gap:16px;
+  transform:translateY(0);transition:transform .28s cubic-bezier(.34,1.1,.64,1);
+}
+.modal-backdrop.hidden .modal{transform:translateY(100%)}
+.modal-title{font-size:20px;font-weight:800;color:var(--text)}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+.field input,.field select{
+  width:100%;padding:13px 16px;border-radius:14px;
+  border:1.5px solid var(--rim);background:#fff;
+  font-family:'Calibri','Candara',sans-serif;font-size:16px;color:var(--text);
+  outline:none;transition:border-color .15s;
+}
+.field input:focus,.field select:focus{border-color:var(--sage)}
+
+.emoji-row{display:flex;flex-wrap:wrap;gap:10px;padding:4px 0}
+.emoji-pick{
+  width:46px;height:46px;border-radius:14px;border:2px solid transparent;
+  background:#fff;cursor:pointer;font-size:26px;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .15s,transform .15s;
+}
+.emoji-pick:active{transform:scale(.88)}
+.emoji-pick.selected{border-color:var(--sage);background:var(--sage-p)}
+
+.modal-actions{display:flex;gap:10px;margin-top:4px}
+.modal-save{
+  flex:1;padding:14px;border-radius:16px;border:none;cursor:pointer;
+  background:var(--sage);color:#fff;
+  font-family:'Calibri','Candara',sans-serif;font-size:16px;font-weight:800;
+  transition:transform .15s;
+}
+.modal-save:active{transform:scale(.95)}
+.modal-cancel{
+  padding:14px 20px;border-radius:16px;border:1.5px solid var(--rim);cursor:pointer;
+  background:#fff;color:var(--muted);
+  font-family:'Calibri','Candara',sans-serif;font-size:16px;font-weight:700;
+}
 </style>
 </head>
 <body>
@@ -339,32 +270,27 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none}
     <div class="home-sub">Scegli un gruppo per chiamare</div>
     <div class="divider"></div>
   </div>
-
   <div class="menu-row">
     <button class="menu-btn btn-bbm" id="openBBM">
-      <span class="btn-emoji">💼</span>
-      BBM
+      <span class="btn-emoji">💼</span>BBM
     </button>
     <button class="menu-btn btn-fede" id="openFEDE">
-      <span class="btn-emoji">🏡</span>
-      FEDE
+      <span class="btn-emoji">🏡</span>FEDE
     </button>
   </div>
-
   <div class="home-footer">
     <div class="home-hint">Tocca un gruppo</div>
-    <button class="info-btn" id="openGuide" title="Come installare">?</button>
   </div>
 </div>
 
 <!-- ══ DIAL ══ -->
 <div class="screen hidden" id="dial">
   <div class="dial-header">
-    <button class="back-btn" id="backBtn">← Indietro</button>
+    <button class="back-btn" id="backDial">← Indietro</button>
     <div class="dial-badge" id="dialBadge">BBM</div>
+    <button class="edit-contacts-btn" id="openManager">✏️ Gestisci</button>
   </div>
   <div class="dial-sub" id="dialSub">Contatti di lavoro</div>
-
   <div class="orbit-wrap">
     <div class="orbit-container" id="orbit">
       <div class="ring ring1"></div>
@@ -373,7 +299,6 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none}
       <div class="center-dot" id="centerDot">📞</div>
     </div>
   </div>
-
   <div class="dial-hint">Tocca un contatto per chiamare</div>
 </div>
 
@@ -386,99 +311,63 @@ html,body{width:100%;height:100%;overflow:hidden;user-select:none}
   <button class="end-btn" id="endCall">📵</button>
 </div>
 
-<!-- ══ INSTALL GUIDE ══ -->
-<div class="screen hidden" id="guide">
-  <div class="guide-header">
-    <button class="back-btn" id="backGuide">← Indietro</button>
+<!-- ══ MANAGER ══ -->
+<div class="screen hidden" id="manager">
+  <div class="mgr-header">
+    <button class="back-btn" id="backManager">← Indietro</button>
+    <div class="mgr-title" id="mgrTitle">Contatti BBM</div>
+    <button class="add-btn" id="addContact">＋ Aggiungi</button>
   </div>
-  <div class="guide-body">
-    <div class="guide-title">📲 Installa sul cellulare</div>
-    <div class="guide-intro">Segui questi passaggi per aggiungere Speed Dial alla schermata Home come una vera app — zero costi, zero App Store.</div>
+  <div class="mgr-list" id="mgrList"></div>
+</div>
 
-    <div class="os-tabs">
-      <button class="tab active" id="tabIos" onclick="showOS('ios')">🍎 iPhone</button>
-      <button class="tab inactive" id="tabAnd" onclick="showOS('and')">🤖 Android</button>
+<!-- ══ MODAL ADD/EDIT ══ -->
+<div class="modal-backdrop hidden" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Nuovo contatto</div>
+
+    <div class="field">
+      <label>Emoji / Icona</label>
+      <div class="emoji-row" id="emojiRow"></div>
     </div>
 
-    <div class="steps" id="stepsIos">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">
-          <div class="step-title">Apri con Safari</div>
-          <div class="step-desc">Questo file va aperto con <strong>Safari</strong> (non Chrome). Invialo a te stesso via WhatsApp, email o AirDrop, poi aprilo con Safari.</div>
-        </div>
-        <div class="step-icon">🧭</div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">
-          <div class="step-title">Tocca il tasto Condividi</div>
-          <div class="step-desc">In basso al centro di Safari, tocca l'icona quadrata con la freccia su ⬆️</div>
-        </div>
-        <div class="step-icon">⬆️</div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">
-          <div class="step-title">Aggiungi a schermata Home</div>
-          <div class="step-desc">Scorri il menu e scegli <strong>"Aggiungi a schermata Home"</strong>. Poi tocca <strong>Aggiungi</strong> in alto a destra.</div>
-        </div>
-        <div class="step-icon">＋</div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-text">
-          <div class="step-title">Fatto! 🎉</div>
-          <div class="step-desc">Trovi l'icona "Speed Dial" sulla schermata Home. Si apre a schermo intero come una vera app!</div>
-        </div>
-        <div class="step-icon">🏠</div>
-      </div>
+    <div class="field">
+      <label>Nome</label>
+      <input type="text" id="fieldName" placeholder="Es. Marco" maxlength="16">
     </div>
 
-    <div class="steps hidden" id="stepsAnd">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">
-          <div class="step-title">Apri con Chrome</div>
-          <div class="step-desc">Invia il file a te stesso (WhatsApp, email, Telegram), poi aprilo con <strong>Chrome</strong>.</div>
-        </div>
-        <div class="step-icon">🌐</div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">
-          <div class="step-title">Menu ⋮ in alto a destra</div>
-          <div class="step-desc">Tocca i tre puntini ⋮ in alto a destra di Chrome.</div>
-        </div>
-        <div class="step-icon">⋮</div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">
-          <div class="step-title">Aggiungi a schermata Home</div>
-          <div class="step-desc">Scegli <strong>"Aggiungi a schermata Home"</strong> o <strong>"Installa app"</strong> e conferma.</div>
-        </div>
-        <div class="step-icon">＋</div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-text">
-          <div class="step-title">Fatto! 🎉</div>
-          <div class="step-desc">L'icona appare sul desktop. Si lancia a schermo intero come un'app nativa!</div>
-        </div>
-        <div class="step-icon">🏠</div>
-      </div>
+    <div class="field">
+      <label>Numero di telefono</label>
+      <input type="tel" id="fieldNumber" placeholder="Es. +39 333 123 4567">
     </div>
 
-    <div class="tip-box">
-      <p>💡 <strong>Suggerimento:</strong> Per personalizzare i contatti (nomi, numeri, emoji) basta modificare il file HTML con un editor di testo prima di copiarlo sul cellulare.</p>
+    <div class="field">
+      <label>Stato</label>
+      <select id="fieldStatus">
+        <option value="online">🟢 Disponibile</option>
+        <option value="away">🟡 Non disponibile</option>
+        <option value="busy">🔴 Occupato</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-cancel" id="modalCancel">Annulla</button>
+      <button class="modal-save"   id="modalSave">💾 Salva</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── DATI ─────────────────────────────
-const groups = {
+// ══ EMOJI LIST ══
+const EMOJIS = ['👨‍💼','👩‍💼','👨‍🦲','👩‍🦳','👴','👵','👨','👩','🧑','👶',
+  '👨‍🍳','👩‍🍳','🧑‍💻','👨‍🔧','👩‍🔧','👨‍🎨','👩‍🎨','👨‍🎤','👩‍🎤','🧑‍🏫',
+  '⚖️','📊','🤝','🏋️','🏃','🎸','🎨','📱','🌟','❤️'];
+
+const COLORS = ['#3a6fba','#5a9464','#b85c28','#9a70cc','#c06080',
+  '#4a9955','#e8884a','#5588bb','#cc6644','#6699cc'];
+
+// ══ DEFAULT DATA ══
+const DEFAULT = {
   bbm:{
     label:'BBM',sub:'Contatti di lavoro',
     badgeClass:'badge-bbm',dotClass:'bbm',lineColor:'#3a6fba',mode:'bbm-mode',
@@ -486,9 +375,7 @@ const groups = {
       {name:'Direttore', emoji:'👨‍💼',color:'#3a6fba',status:'online', number:'+39 02 1234 5678'},
       {name:'Segretaria',emoji:'👩‍💼',color:'#6688bb',status:'online', number:'+39 02 1234 5679'},
       {name:'Avvocato',  emoji:'⚖️',  color:'#2d5a9e',status:'away',   number:'+39 02 1234 5680'},
-      {name:'Commerc.',  emoji:'📊',  color:'#4477aa',status:'busy',   number:'+39 02 1234 5681'},
       {name:'IT',        emoji:'🧑‍💻', color:'#5588bb',status:'online', number:'+39 02 1234 5682'},
-      {name:'Cliente A', emoji:'🤝',  color:'#1a4488',status:'away',   number:'+39 02 1234 5683'},
     ]
   },
   fede:{
@@ -499,64 +386,76 @@ const groups = {
       {name:'Papà',  emoji:'👨‍🦲',color:'#5a9a7a',status:'away',   number:'+39 333 222 3333'},
       {name:'Giulia',emoji:'👩‍🎨',color:'#e07898',status:'online', number:'+39 333 333 4444'},
       {name:'Luca',  emoji:'🧑‍🍳',color:'#9a70cc',status:'online', number:'+39 333 444 5555'},
-      {name:'Nonna', emoji:'👵',  color:'#cc6644',status:'away',   number:'+39 333 555 6666'},
-      {name:'Marco', emoji:'🏋️', color:'#4a9955',status:'busy',   number:'+39 333 666 7777'},
     ]
   }
 };
 
-// ── CLOCK ─────────────────────────────
+// ══ STATE ══
+let groups = JSON.parse(localStorage.getItem('speedDialGroups') || 'null') || JSON.parse(JSON.stringify(DEFAULT));
+let currentGroup = 'bbm';
+let editingIndex = -1; // -1 = new
+let selectedEmoji = EMOJIS[0];
+
+function save(){ localStorage.setItem('speedDialGroups', JSON.stringify(groups)); }
+
+// ══ CLOCK ══
 const DAYS=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
 const MESI=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 function tick(){
   const n=new Date();
-  document.getElementById('clock').textContent=
-    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-  document.getElementById('dateLabel').textContent=
-    DAYS[n.getDay()]+', '+n.getDate()+' '+MESI[n.getMonth()];
+  document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('dateLabel').textContent=DAYS[n.getDay()]+', '+n.getDate()+' '+MESI[n.getMonth()];
 }
-tick();setInterval(tick,15000);
+tick(); setInterval(tick,15000);
 
-// ── NAV ───────────────────────────────
+// ══ NAV ══
 const show=id=>document.getElementById(id).classList.remove('hidden');
 const hide=id=>document.getElementById(id).classList.add('hidden');
 
-// ── ORBIT ─────────────────────────────
+// ══ BUILD ORBIT ══
 function buildOrbit(key){
-  const g=groups[key];
-  const badge=document.getElementById('dialBadge');
-  badge.className='dial-badge '+g.badgeClass;
-  badge.textContent=g.label;
-  document.getElementById('dialSub').textContent=g.sub;
+  currentGroup = key;
+  const g = groups[key];
+  const badge = document.getElementById('dialBadge');
+  badge.className = 'dial-badge '+g.badgeClass;
+  badge.textContent = g.label;
+  document.getElementById('dialSub').textContent = g.sub;
 
-  const dot=document.getElementById('centerDot');
-  dot.className='center-dot '+g.dotClass;
+  const dot = document.getElementById('centerDot');
+  dot.className = 'center-dot '+g.dotClass;
 
-  const dialEl=document.getElementById('dial');
-  dialEl.className='screen bbm-mode hidden'; // reset then set
-  dialEl.classList.remove('hidden');
+  const dialEl = document.getElementById('dial');
   dialEl.classList.remove('bbm-mode','fede-mode');
   dialEl.classList.add(g.mode);
 
-  const orbit=document.getElementById('orbit');
-  const svg=document.getElementById('lines');
-  orbit.querySelectorAll('.contact').forEach(e=>e.remove());
-  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const orbit = document.getElementById('orbit');
+  const svg   = document.getElementById('lines');
+  orbit.querySelectorAll('.contact,.empty-orbit').forEach(e=>e.remove());
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
 
-  const cx=170,cy=170,r=132;
-  g.contacts.forEach((c,i)=>{
-    const a=(2*Math.PI/g.contacts.length)*i-Math.PI/2;
-    const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+  const contacts = g.contacts;
+  if(contacts.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'empty-orbit';
+    empty.innerHTML = '<div class="big">👤</div><p>Nessun contatto</p><small>Tocca "Gestisci" per aggiungerne</small>';
+    orbit.appendChild(empty);
+    return;
+  }
+
+  const cx=170,cy=170,r=130;
+  contacts.forEach((c,i)=>{
+    const a=(2*Math.PI/contacts.length)*i-Math.PI/2;
+    const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
 
     const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
-    ln.setAttribute('x1',cx);ln.setAttribute('y1',cy);
-    ln.setAttribute('x2',x); ln.setAttribute('y2',y);
-    ln.setAttribute('stroke',g.lineColor);ln.setAttribute('stroke-width','1.8');
+    ln.setAttribute('x1',cx); ln.setAttribute('y1',cy);
+    ln.setAttribute('x2',x);  ln.setAttribute('y2',y);
+    ln.setAttribute('stroke',g.lineColor); ln.setAttribute('stroke-width','1.8');
     svg.appendChild(ln);
 
     const nd=document.createElement('div');
     nd.className='contact';
-    nd.style.left=x+'px';nd.style.top=y+'px';
+    nd.style.left=x+'px'; nd.style.top=y+'px';
     nd.style.animationDelay=(i*.07)+'s';
     nd.innerHTML=`
       <div class="avatar-wrap" style="border-color:${c.color}66;">
@@ -569,41 +468,128 @@ function buildOrbit(key){
   });
 }
 
+// ══ CALL ══
 function startCall(c){
   const av=document.getElementById('callingAvatar');
-  av.textContent=c.emoji;av.style.borderColor=c.color;
+  av.textContent=c.emoji; av.style.borderColor=c.color;
   document.getElementById('callingName').textContent=c.name;
   document.getElementById('callingNumber').textContent=c.number;
-  hide('dial');show('calling');
+  hide('dial'); show('calling');
 }
 
-// ── OS TABS ───────────────────────────
-function showOS(os){
-  document.getElementById('stepsIos').classList.toggle('hidden',os!=='ios');
-  document.getElementById('stepsAnd').classList.toggle('hidden',os!=='and');
-  document.getElementById('tabIos').className='tab '+(os==='ios'?'active':'inactive');
-  document.getElementById('tabAnd').className='tab '+(os==='and'?'active':'inactive');
+// ══ MANAGER ══
+function openManager(){
+  renderList();
+  document.getElementById('mgrTitle').textContent='Contatti '+groups[currentGroup].label;
+  hide('dial'); show('manager');
 }
 
-// ── EVENTS ────────────────────────────
-document.getElementById('openBBM').addEventListener('click',()=>{
-  buildOrbit('bbm');hide('home');show('dial');
-});
-document.getElementById('openFEDE').addEventListener('click',()=>{
-  buildOrbit('fede');hide('home');show('dial');
-});
-document.getElementById('backBtn').addEventListener('click',()=>{
-  hide('dial');show('home');
-});
-document.getElementById('endCall').addEventListener('click',()=>{
-  hide('calling');show('dial');
-});
-document.getElementById('openGuide').addEventListener('click',()=>{
-  hide('home');show('guide');
-});
-document.getElementById('backGuide').addEventListener('click',()=>{
-  hide('guide');show('home');
-});
+function renderList(){
+  const list = document.getElementById('mgrList');
+  const contacts = groups[currentGroup].contacts;
+  list.innerHTML='';
+
+  if(contacts.length===0){
+    list.innerHTML=`<div class="empty-list"><div class="big">📭</div><p>Nessun contatto ancora.<br>Tocca "＋ Aggiungi" per iniziare!</p></div>`;
+    return;
+  }
+
+  contacts.forEach((c,i)=>{
+    const card=document.createElement('div');
+    card.className='contact-card';
+    const statusColor={online:'#22c55e',away:'#f59e0b',busy:getComputedStyle(document.documentElement).getPropertyValue('--danger').trim()||'#d9534f'}[c.status]||'#22c55e';
+    card.innerHTML=`
+      <div class="card-emoji">${c.emoji}</div>
+      <div class="card-info">
+        <div class="card-name">${c.name}</div>
+        <div class="card-num"><span class="card-status" style="background:${statusColor}"></span>${c.number}</div>
+      </div>
+      <div class="card-actions">
+        <button class="card-btn btn-edit" data-i="${i}" title="Modifica">✏️</button>
+        <button class="card-btn btn-del"  data-i="${i}" title="Elimina">🗑️</button>
+      </div>`;
+    list.appendChild(card);
+  });
+
+  list.querySelectorAll('.btn-edit').forEach(b=>b.addEventListener('click',()=>openModal(+b.dataset.i)));
+  list.querySelectorAll('.btn-del').forEach(b=>b.addEventListener('click',()=>deleteContact(+b.dataset.i)));
+}
+
+function deleteContact(i){
+  if(confirm('Eliminare "'+groups[currentGroup].contacts[i].name+'"?')){
+    groups[currentGroup].contacts.splice(i,1);
+    save(); renderList();
+  }
+}
+
+// ══ MODAL ══
+function buildEmojiPicker(selected){
+  const row=document.getElementById('emojiRow');
+  row.innerHTML='';
+  EMOJIS.forEach(e=>{
+    const btn=document.createElement('button');
+    btn.className='emoji-pick'+(e===selected?' selected':'');
+    btn.textContent=e;
+    btn.addEventListener('click',()=>{
+      selectedEmoji=e;
+      row.querySelectorAll('.emoji-pick').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+    row.appendChild(btn);
+  });
+}
+
+function openModal(index=-1){
+  editingIndex=index;
+  const isNew=index===-1;
+  document.getElementById('modalTitle').textContent=isNew?'Nuovo contatto':'Modifica contatto';
+
+  const c=isNew?{emoji:EMOJIS[0],name:'',number:'',status:'online'}:groups[currentGroup].contacts[index];
+  selectedEmoji=c.emoji;
+  buildEmojiPicker(selectedEmoji);
+  document.getElementById('fieldName').value=c.name;
+  document.getElementById('fieldNumber').value=c.number;
+  document.getElementById('fieldStatus').value=c.status;
+
+  document.getElementById('modalBackdrop').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('fieldName').focus(),300);
+}
+
+function closeModal(){
+  document.getElementById('modalBackdrop').classList.add('hidden');
+}
+
+function saveContact(){
+  const name=document.getElementById('fieldName').value.trim();
+  const number=document.getElementById('fieldNumber').value.trim();
+  const status=document.getElementById('fieldStatus').value;
+
+  if(!name){alert('Inserisci un nome!');return;}
+  if(!number){alert('Inserisci un numero!');return;}
+
+  const color=COLORS[Math.floor(Math.random()*COLORS.length)];
+  const contact={name,number,emoji:selectedEmoji,status,color};
+
+  if(editingIndex===-1){
+    groups[currentGroup].contacts.push(contact);
+  } else {
+    contact.color=groups[currentGroup].contacts[editingIndex].color;
+    groups[currentGroup].contacts[editingIndex]=contact;
+  }
+  save(); closeModal(); renderList();
+}
+
+// ══ EVENTS ══
+document.getElementById('openBBM').addEventListener('click',()=>{buildOrbit('bbm');hide('home');show('dial')});
+document.getElementById('openFEDE').addEventListener('click',()=>{buildOrbit('fede');hide('home');show('dial')});
+document.getElementById('backDial').addEventListener('click',()=>{hide('dial');show('home')});
+document.getElementById('endCall').addEventListener('click',()=>{hide('calling');show('dial')});
+document.getElementById('openManager').addEventListener('click',openManager);
+document.getElementById('backManager').addEventListener('click',()=>{buildOrbit(currentGroup);hide('manager');show('dial')});
+document.getElementById('addContact').addEventListener('click',()=>openModal(-1));
+document.getElementById('modalCancel').addEventListener('click',closeModal);
+document.getElementById('modalSave').addEventListener('click',saveContact);
+document.getElementById('modalBackdrop').addEventListener('click',e=>{if(e.target===document.getElementById('modalBackdrop'))closeModal()});
 </script>
 </body>
 </html>
