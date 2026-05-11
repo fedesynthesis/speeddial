@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Speed Dial</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root{
+  font-family:'Calibri','Candara','Segoe UI',Arial,sans-serif;
+  --sage:#5a9464;--sage-d:#2d5e38;--sage-p:#e6f4e2;
+  --text:#1e2e1e;--muted:#6e8c6e;--rim:#b8d0b4;
+  --white:#ffffff;--danger:#d9534f;
+  --bbm:#3a6fba;--bbm2:#5588cc;--bbm-l:#ddeaf8;
+  --fede:#b85c28;--fede2:#d07840;--fede-l:#fae5d4;
+}
+
+html,body{width:100%;height:100%;overflow:hidden;user-select:none}
+
+/* ══ SCREEN SYSTEM ══ */
+.screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;align-items:center;
+  transition:opacity .3s ease,transform .3s ease;
+  overflow:hidden;
+}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(18px) scale(.97)}
+
+/* ══════════════════ HOME ══════════════════ */
+#home{
+  background:linear-gradient(175deg,#f0f8ec 0%,#daeedd 50%,#c8e0ca 100%);
+  justify-content:space-between;
+  padding-bottom:max(56px,env(safe-area-inset-bottom,56px));
+}
+
+/* decorative blobs */
+#home::before,#home::after{
+  content:'';position:absolute;border-radius:50%;pointer-events:none;
+}
+#home::before{
+  width:320px;height:320px;
+  background:radial-gradient(circle,rgba(90,148,100,.13),transparent 70%);
+  top:-60px;right:-80px;
+}
+#home::after{
+  width:260px;height:260px;
+  background:radial-gradient(circle,rgba(58,111,186,.1),transparent 70%);
+  bottom:60px;left:-60px;
+}
+
+.home-top{
+  width:100%;
+  padding:max(56px,env(safe-area-inset-top,56px)) 28px 0;
+  text-align:center;position:relative;z-index:1;
+}
+.home-time{
+  font-size:84px;font-weight:200;color:var(--text);
+  letter-spacing:-4px;line-height:1;
+}
+.home-date{font-size:15px;color:var(--muted);margin-top:6px;letter-spacing:.5px}
+.home-greeting{
+  font-size:24px;font-weight:800;color:var(--sage-d);
+  margin-top:28px;
+}
+.home-sub{font-size:14px;color:var(--muted);margin-top:5px}
+
+/* pill divider */
+.divider{
+  width:48px;height:4px;border-radius:99px;
+  background:linear-gradient(90deg,var(--bbm),var(--fede));
+  opacity:.5;margin:20px auto 0;
+}
+
+/* BIG ROUND BUTTONS */
+.menu-row{
+  display:flex;gap:36px;
+  width:100%;justify-content:center;
+  padding:0 20px;position:relative;z-index:1;
+}
+.menu-btn{
+  width:160px;height:160px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Calibri','Candara',sans-serif;
+  font-size:18px;font-weight:900;letter-spacing:2.5px;
+  text-transform:uppercase;color:#fff;gap:10px;
+  transition:transform .18s,box-shadow .2s;
+  position:relative;overflow:hidden;
+}
+.menu-btn::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.25),transparent 65%);
+}
+.menu-btn:active{transform:scale(.91)}
+.btn-emoji{font-size:42px;line-height:1}
+
+.btn-bbm{
+  background:linear-gradient(140deg,var(--bbm2),var(--bbm));
+  box-shadow:0 0 0 14px rgba(58,111,186,.11),0 14px 44px rgba(58,111,186,.38);
+}
+.btn-fede{
+  background:linear-gradient(140deg,var(--fede2),var(--fede));
+  box-shadow:0 0 0 14px rgba(184,92,40,.11),0 14px 44px rgba(184,92,40,.38);
+}
+
+.home-footer{
+  display:flex;align-items:center;gap:8px;
+  position:relative;z-index:1;
+}
+.home-hint{font-size:12px;color:var(--muted);letter-spacing:.5px}
+.info-btn{
+  width:26px;height:26px;border-radius:50%;border:1.5px solid var(--rim);
+  background:rgba(255,255,255,.7);cursor:pointer;
+  font-size:13px;font-weight:700;color:var(--sage-d);
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ══════════════════ DIAL ══════════════════ */
+#dial{
+  justify-content:flex-start;
+}
+#dial.bbm-mode { background:radial-gradient(ellipse at 50% 35%,#eaf3ff 0%,#d4e6f5 60%,#c8d8ec 100%); }
+#dial.fede-mode{ background:radial-gradient(ellipse at 50% 35%,#fff4ec 0%,#f5e0cc 60%,#ecdacc 100%); }
+
+.dial-header{
+  width:100%;
+  padding:max(22px,env(safe-area-inset-top,22px)) 20px 0;
+  display:flex;align-items:center;gap:12px;
+}
+.back-btn{
+  background:rgba(255,255,255,.82);border:1.5px solid var(--rim);
+  border-radius:50px;padding:9px 20px;
+  font-family:'Calibri','Candara',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;color:var(--text);
+  transition:background .15s;box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.back-btn:active{background:var(--rim)}
+
+.dial-badge{
+  padding:8px 20px;border-radius:50px;
+  font-size:14px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+.badge-bbm {background:var(--bbm);  color:#fff}
+.badge-fede{background:var(--fede); color:#fff}
+
+.dial-sub{font-size:15px;color:var(--muted);margin:10px 0 0;font-weight:500}
+
+/* ORBIT */
+.orbit-wrap{
+  flex:1;width:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+.orbit-container{position:relative;width:340px;height:340px}
+
+.ring{position:absolute;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.ring1{width:294px;height:294px;animation:spin 24s linear infinite}
+.ring2{width:204px;height:204px;animation:spin 17s linear infinite reverse}
+.bbm-mode  .ring1{border:1.5px solid rgba(58,111,186,.22)}
+.bbm-mode  .ring2{border:1px  dashed rgba(58,111,186,.14)}
+.fede-mode .ring1{border:1.5px solid rgba(184,92,40,.22)}
+.fede-mode .ring2{border:1px  dashed rgba(184,92,40,.14)}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.lines-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.3}
+
+.center-dot{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  animation:cpulse 2.2s ease-in-out infinite;
+}
+.center-dot.bbm {background:var(--bbm);  box-shadow:0 0 0 6px rgba(58,111,186,.18),0 0 22px var(--bbm)}
+.center-dot.fede{background:var(--fede); box-shadow:0 0 0 6px rgba(184,92,40,.18), 0 0 22px var(--fede)}
+@keyframes cpulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%    {transform:translate(-50%,-50%) scale(1.45)}
+}
+
+/* CONTACTS */
+.contact{
+  position:absolute;transform:translate(-50%,-50%);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;
+  animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn{
+  from{opacity:0;transform:translate(-50%,-50%) scale(0)}
+  to  {opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+
+.avatar-wrap{
+  width:92px;height:92px;border-radius:50%;
+  border:3.5px solid transparent;background:#fff;
+  position:relative;overflow:hidden;
+  box-shadow:0 6px 22px rgba(0,0,0,.14),0 2px 6px rgba(0,0,0,.06);
+  transition:transform .18s,box-shadow .18s;
+}
+/* glass shine */
+.avatar-wrap::after{
+  content:'';position:absolute;top:4px;left:8px;
+  width:40px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.35);
+  transform:rotate(-20deg);pointer-events:none;
+}
+.contact:active .avatar-wrap{transform:scale(.88);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+
+.avatar-emoji{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:46px;
+}
+.contact-name{
+  margin-top:7px;font-size:13px;font-weight:800;
+  font-family:'Calibri','Candara',sans-serif;
+  color:var(--text);white-space:nowrap;
+  text-shadow:0 1px 5px rgba(255,255,255,.95);
+  letter-spacing:.3px;
+}
+
+.status-dot{
+  position:absolute;bottom:4px;right:4px;
+  width:15px;height:15px;border-radius:50%;border:3px solid #fff;
+}
+.online{background:#22c55e}.busy{background:var(--danger)}.away{background:#f59e0b}
+
+.dial-hint{
+  font-size:12px;color:var(--muted);
+  padding-bottom:max(30px,env(safe-area-inset-bottom,30px));
+  letter-spacing:.5px;font-weight:600;
+}
+
+/* ══════════════════ CALLING ══════════════════ */
+#calling{
+  background:rgba(238,248,235,.96);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  justify-content:center;z-index:50;
+}
+#calling::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(160deg,rgba(90,148,100,.08),rgba(58,111,186,.05));
+  pointer-events:none;
+}
+
+.calling-avatar{
+  width:140px;height:140px;border-radius:50%;
+  border:4px solid var(--sage);background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:64px;
+  margin-bottom:26px;position:relative;z-index:1;
+  animation:rp 1.8s ease-in-out infinite;
+}
+@keyframes rp{
+  0%,100%{box-shadow:0 0 0 12px rgba(90,148,100,.13),0 0 0 26px rgba(90,148,100,.06)}
+  50%    {box-shadow:0 0 0 20px rgba(90,148,100,.19),0 0 0 40px rgba(90,148,100,.08)}
+}
+.calling-name{font-size:36px;font-weight:800;color:var(--text);margin-bottom:6px;position:relative;z-index:1}
+.calling-number{font-size:16px;color:var(--muted);margin-bottom:12px;position:relative;z-index:1}
+.calling-status{
+  font-size:13px;color:var(--sage);letter-spacing:2.5px;
+  text-transform:uppercase;font-weight:700;margin-bottom:64px;
+  animation:blink 1.4s steps(1) infinite;position:relative;z-index:1;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.end-btn{
+  width:82px;height:82px;border-radius:50%;background:var(--danger);border:none;
+  cursor:pointer;font-size:34px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 12px rgba(217,83,79,.12),0 10px 32px rgba(217,83,79,.4);
+  transition:transform .15s;position:relative;z-index:1;
+}
+.end-btn:active{transform:scale(.88)}
+
+/* ══════════════════ INSTALL GUIDE ══════════════════ */
+#guide{
+  background:linear-gradient(170deg,#f0f8ec 0%,#daeedd 100%);
+  justify-content:flex-start;overflow-y:auto;
+  padding-bottom:max(40px,env(safe-area-inset-bottom,40px));
+}
+.guide-header{
+  width:100%;padding:max(22px,env(safe-area-inset-top,22px)) 20px 0;
+  display:flex;align-items:center;gap:12px;
+}
+.guide-body{
+  width:100%;padding:24px 22px 0;
+  display:flex;flex-direction:column;gap:0;
+}
+.guide-title{
+  font-size:22px;font-weight:800;color:var(--text);
+  margin-bottom:4px;
+}
+.guide-intro{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+.os-tabs{display:flex;gap:10px;margin-bottom:20px}
+.tab{
+  flex:1;padding:10px 0;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Calibri','Candara',sans-serif;
+  font-size:15px;font-weight:700;transition:all .18s;
+}
+.tab.active{background:var(--sage);color:#fff;box-shadow:0 4px 14px rgba(90,148,100,.3)}
+.tab.inactive{background:rgba(255,255,255,.6);color:var(--muted);border:1.5px solid var(--rim)}
+
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{
+  background:rgba(255,255,255,.82);border-radius:18px;
+  padding:16px 18px;display:flex;gap:14px;align-items:flex-start;
+  box-shadow:0 2px 12px rgba(0,0,0,.07);
+}
+.step-num{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:#fff;background:var(--sage);
+}
+.step-text{flex:1}
+.step-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:3px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.5}
+.step-icon{font-size:22px;margin-top:1px}
+
+.tip-box{
+  margin-top:20px;background:rgba(255,255,255,.7);
+  border-left:4px solid var(--sage);border-radius:0 14px 14px 0;
+  padding:14px 16px;
+}
+.tip-box p{font-size:13px;color:var(--text);line-height:1.5}
+.tip-box strong{color:var(--sage-d)}
+</style>
+</head>
+<body>
+
+<!-- ══ HOME ══ -->
+<div class="screen" id="home">
+  <div class="home-top">
+    <div class="home-time" id="clock">--:--</div>
+    <div class="home-date" id="dateLabel"></div>
+    <div class="home-greeting">Ciao! 👋</div>
+    <div class="home-sub">Scegli un gruppo per chiamare</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="menu-row">
+    <button class="menu-btn btn-bbm" id="openBBM">
+      <span class="btn-emoji">💼</span>
+      BBM
+    </button>
+    <button class="menu-btn btn-fede" id="openFEDE">
+      <span class="btn-emoji">🏡</span>
+      FEDE
+    </button>
+  </div>
+
+  <div class="home-footer">
+    <div class="home-hint">Tocca un gruppo</div>
+    <button class="info-btn" id="openGuide" title="Come installare">?</button>
+  </div>
+</div>
+
+<!-- ══ DIAL ══ -->
+<div class="screen hidden" id="dial">
+  <div class="dial-header">
+    <button class="back-btn" id="backBtn">← Indietro</button>
+    <div class="dial-badge" id="dialBadge">BBM</div>
+  </div>
+  <div class="dial-sub" id="dialSub">Contatti di lavoro</div>
+
+  <div class="orbit-wrap">
+    <div class="orbit-container" id="orbit">
+      <div class="ring ring1"></div>
+      <div class="ring ring2"></div>
+      <svg class="lines-svg" id="lines" viewBox="0 0 340 340"></svg>
+      <div class="center-dot" id="centerDot">📞</div>
+    </div>
+  </div>
+
+  <div class="dial-hint">Tocca un contatto per chiamare</div>
+</div>
+
+<!-- ══ CALLING ══ -->
+<div class="screen hidden" id="calling">
+  <div class="calling-avatar" id="callingAvatar"></div>
+  <div class="calling-name"   id="callingName">—</div>
+  <div class="calling-number" id="callingNumber"></div>
+  <div class="calling-status">Chiamata in corso…</div>
+  <button class="end-btn" id="endCall">📵</button>
+</div>
+
+<!-- ══ INSTALL GUIDE ══ -->
+<div class="screen hidden" id="guide">
+  <div class="guide-header">
+    <button class="back-btn" id="backGuide">← Indietro</button>
+  </div>
+  <div class="guide-body">
+    <div class="guide-title">📲 Installa sul cellulare</div>
+    <div class="guide-intro">Segui questi passaggi per aggiungere Speed Dial alla schermata Home come una vera app — zero costi, zero App Store.</div>
+
+    <div class="os-tabs">
+      <button class="tab active" id="tabIos" onclick="showOS('ios')">🍎 iPhone</button>
+      <button class="tab inactive" id="tabAnd" onclick="showOS('and')">🤖 Android</button>
+    </div>
+
+    <div class="steps" id="stepsIos">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="step-title">Apri con Safari</div>
+          <div class="step-desc">Questo file va aperto con <strong>Safari</strong> (non Chrome). Invialo a te stesso via WhatsApp, email o AirDrop, poi aprilo con Safari.</div>
+        </div>
+        <div class="step-icon">🧭</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="step-title">Tocca il tasto Condividi</div>
+          <div class="step-desc">In basso al centro di Safari, tocca l'icona quadrata con la freccia su ⬆️</div>
+        </div>
+        <div class="step-icon">⬆️</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="step-title">Aggiungi a schermata Home</div>
+          <div class="step-desc">Scorri il menu e scegli <strong>"Aggiungi a schermata Home"</strong>. Poi tocca <strong>Aggiungi</strong> in alto a destra.</div>
+        </div>
+        <div class="step-icon">＋</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <div class="step-title">Fatto! 🎉</div>
+          <div class="step-desc">Trovi l'icona "Speed Dial" sulla schermata Home. Si apre a schermo intero come una vera app!</div>
+        </div>
+        <div class="step-icon">🏠</div>
+      </div>
+    </div>
+
+    <div class="steps hidden" id="stepsAnd">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="step-title">Apri con Chrome</div>
+          <div class="step-desc">Invia il file a te stesso (WhatsApp, email, Telegram), poi aprilo con <strong>Chrome</strong>.</div>
+        </div>
+        <div class="step-icon">🌐</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="step-title">Menu ⋮ in alto a destra</div>
+          <div class="step-desc">Tocca i tre puntini ⋮ in alto a destra di Chrome.</div>
+        </div>
+        <div class="step-icon">⋮</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="step-title">Aggiungi a schermata Home</div>
+          <div class="step-desc">Scegli <strong>"Aggiungi a schermata Home"</strong> o <strong>"Installa app"</strong> e conferma.</div>
+        </div>
+        <div class="step-icon">＋</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <div class="step-title">Fatto! 🎉</div>
+          <div class="step-desc">L'icona appare sul desktop. Si lancia a schermo intero come un'app nativa!</div>
+        </div>
+        <div class="step-icon">🏠</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p>💡 <strong>Suggerimento:</strong> Per personalizzare i contatti (nomi, numeri, emoji) basta modificare il file HTML con un editor di testo prima di copiarlo sul cellulare.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATI ─────────────────────────────
+const groups = {
+  bbm:{
+    label:'BBM',sub:'Contatti di lavoro',
+    badgeClass:'badge-bbm',dotClass:'bbm',lineColor:'#3a6fba',mode:'bbm-mode',
+    contacts:[
+      {name:'Direttore', emoji:'👨‍💼',color:'#3a6fba',status:'online', number:'+39 02 1234 5678'},
+      {name:'Segretaria',emoji:'👩‍💼',color:'#6688bb',status:'online', number:'+39 02 1234 5679'},
+      {name:'Avvocato',  emoji:'⚖️',  color:'#2d5a9e',status:'away',   number:'+39 02 1234 5680'},
+      {name:'Commerc.',  emoji:'📊',  color:'#4477aa',status:'busy',   number:'+39 02 1234 5681'},
+      {name:'IT',        emoji:'🧑‍💻', color:'#5588bb',status:'online', number:'+39 02 1234 5682'},
+      {name:'Cliente A', emoji:'🤝',  color:'#1a4488',status:'away',   number:'+39 02 1234 5683'},
+    ]
+  },
+  fede:{
+    label:'FEDE',sub:'Vita quotidiana',
+    badgeClass:'badge-fede',dotClass:'fede',lineColor:'#b85c28',mode:'fede-mode',
+    contacts:[
+      {name:'Mamma', emoji:'👩‍🦳',color:'#e8884a',status:'online', number:'+39 333 111 2222'},
+      {name:'Papà',  emoji:'👨‍🦲',color:'#5a9a7a',status:'away',   number:'+39 333 222 3333'},
+      {name:'Giulia',emoji:'👩‍🎨',color:'#e07898',status:'online', number:'+39 333 333 4444'},
+      {name:'Luca',  emoji:'🧑‍🍳',color:'#9a70cc',status:'online', number:'+39 333 444 5555'},
+      {name:'Nonna', emoji:'👵',  color:'#cc6644',status:'away',   number:'+39 333 555 6666'},
+      {name:'Marco', emoji:'🏋️', color:'#4a9955',status:'busy',   number:'+39 333 666 7777'},
+    ]
+  }
+};
+
+// ── CLOCK ─────────────────────────────
+const DAYS=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+const MESI=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=
+    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('dateLabel').textContent=
+    DAYS[n.getDay()]+', '+n.getDate()+' '+MESI[n.getMonth()];
+}
+tick();setInterval(tick,15000);
+
+// ── NAV ───────────────────────────────
+const show=id=>document.getElementById(id).classList.remove('hidden');
+const hide=id=>document.getElementById(id).classList.add('hidden');
+
+// ── ORBIT ─────────────────────────────
+function buildOrbit(key){
+  const g=groups[key];
+  const badge=document.getElementById('dialBadge');
+  badge.className='dial-badge '+g.badgeClass;
+  badge.textContent=g.label;
+  document.getElementById('dialSub').textContent=g.sub;
+
+  const dot=document.getElementById('centerDot');
+  dot.className='center-dot '+g.dotClass;
+
+  const dialEl=document.getElementById('dial');
+  dialEl.className='screen bbm-mode hidden'; // reset then set
+  dialEl.classList.remove('hidden');
+  dialEl.classList.remove('bbm-mode','fede-mode');
+  dialEl.classList.add(g.mode);
+
+  const orbit=document.getElementById('orbit');
+  const svg=document.getElementById('lines');
+  orbit.querySelectorAll('.contact').forEach(e=>e.remove());
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+
+  const cx=170,cy=170,r=132;
+  g.contacts.forEach((c,i)=>{
+    const a=(2*Math.PI/g.contacts.length)*i-Math.PI/2;
+    const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+    ln.setAttribute('x1',cx);ln.setAttribute('y1',cy);
+    ln.setAttribute('x2',x); ln.setAttribute('y2',y);
+    ln.setAttribute('stroke',g.lineColor);ln.setAttribute('stroke-width','1.8');
+    svg.appendChild(ln);
+
+    const nd=document.createElement('div');
+    nd.className='contact';
+    nd.style.left=x+'px';nd.style.top=y+'px';
+    nd.style.animationDelay=(i*.07)+'s';
+    nd.innerHTML=`
+      <div class="avatar-wrap" style="border-color:${c.color}66;">
+        <div class="avatar-emoji" style="background:${c.color}16;">${c.emoji}</div>
+        <div class="status-dot ${c.status}"></div>
+      </div>
+      <span class="contact-name">${c.name}</span>`;
+    nd.addEventListener('click',()=>startCall(c));
+    orbit.appendChild(nd);
+  });
+}
+
+function startCall(c){
+  const av=document.getElementById('callingAvatar');
+  av.textContent=c.emoji;av.style.borderColor=c.color;
+  document.getElementById('callingName').textContent=c.name;
+  document.getElementById('callingNumber').textContent=c.number;
+  hide('dial');show('calling');
+}
+
+// ── OS TABS ───────────────────────────
+function showOS(os){
+  document.getElementById('stepsIos').classList.toggle('hidden',os!=='ios');
+  document.getElementById('stepsAnd').classList.toggle('hidden',os!=='and');
+  document.getElementById('tabIos').className='tab '+(os==='ios'?'active':'inactive');
+  document.getElementById('tabAnd').className='tab '+(os==='and'?'active':'inactive');
+}
+
+// ── EVENTS ────────────────────────────
+document.getElementById('openBBM').addEventListener('click',()=>{
+  buildOrbit('bbm');hide('home');show('dial');
+});
+document.getElementById('openFEDE').addEventListener('click',()=>{
+  buildOrbit('fede');hide('home');show('dial');
+});
+document.getElementById('backBtn').addEventListener('click',()=>{
+  hide('dial');show('home');
+});
+document.getElementById('endCall').addEventListener('click',()=>{
+  hide('calling');show('dial');
+});
+document.getElementById('openGuide').addEventListener('click',()=>{
+  hide('home');show('guide');
+});
+document.getElementById('backGuide').addEventListener('click',()=>{
+  hide('guide');show('home');
+});
+</script>
+</body>
+</html>
