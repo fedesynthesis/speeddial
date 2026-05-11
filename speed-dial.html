@@ -473,11 +473,18 @@ function buildOrbit(key){
 
 // ══ CALL ══
 function startCall(c){
+  // Mostra schermata chiamata
   const av=document.getElementById('callingAvatar');
   av.textContent=c.emoji; av.style.borderColor=c.color;
   document.getElementById('callingName').textContent=c.name;
   document.getElementById('callingNumber').textContent=c.number;
   hide('dial'); show('calling');
+
+  // Avvia chiamata vera dopo 400ms (tempo per animazione)
+  setTimeout(()=>{
+    const clean = c.number.replace(/\s/g,'');
+    window.location.href = 'tel:' + clean;
+  }, 400);
 }
 
 // ══ MANAGER ══
